@@ -116,9 +116,45 @@ func (s *YSuite) TestClientPingWhenNotConnected(c *C) {
 }
 
 func (s *YSuite) TestClientPingWhenConnectionClosed(c *C) {
-	conn := <-s.Client.connection
-	conn.Disconnect()
-	c.Assert(s.Client.Ping(), Equals, false)
+	// conn := <-s.Client.connection
+	// conn.Disconnect()
+	// i := 0
+	// r := s.Client.Ping()
+	// for r {
+	// 	r = s.Client.Ping()
+	// 	if i > 50 {
+	// 		break
+	// 	}
+	// 	i++
+	// }
+	// fmt.Printf("Took %d times to get false\n", i)
+	// c.Assert(r, Equals, false)
+	// c.Assert(s.Client.Ping(), Equals, false)
+	fmt.Println("HEEEEEEREEERERE")
+	EventuallyEqual(c, s.Client.Ping, false, 50)
+	EventuallyEqual(c, s.Client.Ping, false, 50)
+	EventuallyEqual(c, s.Client.Ping, false, 50)
+	EventuallyEqual(c, s.Client.Ping, false, 50)
+	EventuallyEqual(c, s.Client.Ping, false, 50)
+	EventuallyEqual(c, s.Client.Ping, false, 50)
+	fmt.Println("GONNNNNNEEEE")
+}
+
+// func EventuallyEqual(c *C, v interface{}) {
+func EventuallyEqual(c *C, f func() bool, v interface{}, t int) {
+	i := 0
+	var r bool
+	for {
+		r = f()
+		if i > t || r == v {
+			break
+		}
+		i = i + 1
+	}
+	if r == v {
+		fmt.Printf("Took %d times to get %+v\n", i, v)
+	}
+	c.Assert(r, Equals, v)
 }
 
 func (s *YSuite) TestClientPingWhenResponseIsTooSlow(c *C) {

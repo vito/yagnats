@@ -1,6 +1,7 @@
 package yagnats
 
 import (
+	"fmt"
 	"sync"
 	"time"
 )
@@ -21,18 +22,18 @@ type NATSClient interface {
 type Callback func(*Message)
 
 type Client struct {
-	connection              chan *Connection
-	subscriptions           map[int64]*Subscription
-	subscriptionCounter     int64
-	connected               bool
-	disconnecting           bool
-	lock                    *sync.Mutex
+	connection          chan *Connection
+	subscriptions       map[int64]*Subscription
+	subscriptionCounter int64
+	connected           bool
+	disconnecting       bool
+	lock                *sync.Mutex
 
-	beforeConnectCallback   func()
-	ConnectedCallback       func()
+	beforeConnectCallback func()
+	ConnectedCallback     func()
 
-	logger                  Logger
-	loggerMutex             *sync.RWMutex
+	logger      Logger
+	loggerMutex *sync.RWMutex
 }
 
 type Message struct {
@@ -63,8 +64,10 @@ func NewClient() *Client {
 func (c *Client) Ping() bool {
 	select {
 	case conn := <-c.connection:
+		fmt.Println("here 1")
 		return conn.Ping()
 	case <-time.After(500 * time.Millisecond):
+		fmt.Println("here 2")
 		return false
 	}
 }

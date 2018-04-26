@@ -1,0 +1,4 @@
+#!/usr/bin/env bash
+
+go get -v github.com/nats-io/gnatsd
+go test -race

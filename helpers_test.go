@@ -5,6 +5,7 @@ import (
 	"errors"
 	"fmt"
 	"net"
+	"os"
 	"os/exec"
 	"strconv"
 	"sync"
@@ -61,7 +62,8 @@ func (c *DisconnectingConnectionProvider) ProvideConnection() (*Connection, erro
 }
 
 func startNats(port int) *exec.Cmd {
-	cmd := exec.Command("gnatsd", "-p", strconv.Itoa(port), "--user", "nats", "--pass", "nats")
+	goPath := os.Getenv("GOPATH")
+	cmd := exec.Command(fmt.Sprintf("%s/bin/gnatsd", goPath), "-p", strconv.Itoa(port), "--user", "nats", "--pass", "nats")
 	err := cmd.Start()
 	if err != nil {
 		fmt.Printf("NATS failed to start: %v\n", err)
@@ -74,7 +76,8 @@ func startNats(port int) *exec.Cmd {
 }
 
 func startNatsTLS(port int) *exec.Cmd {
-	cmd := exec.Command("gnatsd", "-p", strconv.Itoa(port), "--user", "nats", "--pass", "nats", "--tls", "--tlscert", "./assets/server-cert.pem", "--tlskey", "./assets/server-pkey.pem")
+	goPath := os.Getenv("GOPATH")
+	cmd := exec.Command(fmt.Sprintf("%s/bin/gnatsd", goPath), "-p", strconv.Itoa(port), "--user", "nats", "--pass", "nats", "--tls", "--tlscert", "./assets/server-cert.pem", "--tlskey", "./assets/server-pkey.pem")
 	err := cmd.Start()
 	if err != nil {
 		fmt.Printf("NATS failed to start: %v\n", err)
@@ -88,7 +91,8 @@ func startNatsTLS(port int) *exec.Cmd {
 }
 
 func startNatsMutualTLS(port int) *exec.Cmd {
-	cmd := exec.Command("gnatsd", "-p", strconv.Itoa(port), "--user", "nats", "--pass", "nats", "--tls", "--tlscert", "./assets/server-cert.pem", "--tlskey", "./assets/server-pkey.pem", "--tlsverify", "--tlscacert", "./assets/ca.pem")
+	goPath := os.Getenv("GOPATH")
+	cmd := exec.Command(fmt.Sprintf("%s/bin/gnatsd", goPath), "-p", strconv.Itoa(port), "--user", "nats", "--pass", "nats", "--tls", "--tlscert", "./assets/server-cert.pem", "--tlskey", "./assets/server-pkey.pem", "--tlsverify", "--tlscacert", "./assets/ca.pem")
 	err := cmd.Start()
 	if err != nil {
 		fmt.Printf("NATS failed to start: %v\n", err)
